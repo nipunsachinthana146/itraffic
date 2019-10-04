@@ -24,7 +24,7 @@ public  class Utilities {
     static Double currentLatitute=10.0;
     static Double currentLontitute;
     //static String dbUrl = "http://tourz.000webhostapp.com/itraffic/android_services/Services/";
-    static String dbUrl = "http://192.168.8.100/itraffic/";
+    static String dbUrl = "http://192.168.8.102/itraffic/";
     //static String dbUrl = "http://192.168.1.35/itraffic/";
     //static String dbUrl = "http://192.168.8.104/itraffic/";
 

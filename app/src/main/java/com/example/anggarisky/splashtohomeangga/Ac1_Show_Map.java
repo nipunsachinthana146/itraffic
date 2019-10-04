@@ -1,11 +1,8 @@
 package com.example.anggarisky.splashtohomeangga;
 
-import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -96,8 +93,6 @@ public class Ac1_Show_Map extends AppCompatActivity implements LocationListener 
 
     @Override
     public void onLocationChanged(Location location) {
-        //locationText.setText("Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
-        //Log.e("getlo","Latitude: " + location.getLatitude() + "\n Longitude: " + location.getLongitude());
         currentLatitude  = location.getLatitude();
         currentLongitude = location.getLongitude();
         Utilities.currentLatitute = location.getLatitude();
