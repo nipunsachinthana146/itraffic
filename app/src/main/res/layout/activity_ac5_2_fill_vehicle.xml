@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Ac5_2_fillVehicle">
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/act5_bg" />
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/q1"
+        android:layout_width="294dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/assis_q1"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toTopOf="@+id/imageView2"
+        app:layout_constraintVertical_bias="0.15" />
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/q1Yes"
+        android:layout_width="110dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="84dp"
+        android:text="Yes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/q1" />
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/q1No"
+        android:layout_width="110dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:text="No"
+        app:layout_constraintStart_toEndOf="@+id/q1Yes"
+        app:layout_constraintTop_toBottomOf="@+id/q1" />
+
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/q2"
+        android:layout_width="294dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/assis_q2"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/q1Yes"
+        app:layout_constraintVertical_bias="0.009" />
+
+
+    <EditText
+        android:inputType="number"
+        android:visibility="invisible"
+        android:id="@+id/editText"
+        android:layout_width="152dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="116dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/q2" />
+
+
+    <ImageView
+        android:id="@+id/q2done"
+        android:visibility="invisible"
+        android:src="@drawable/done"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:layout_constraintTop_toTopOf="@+id/editText" />
+
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/q3"
+        android:layout_width="294dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/assis_q3"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/editText"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <EditText
+        android:visibility="invisible"
+        android:id="@+id/editText1"
+        android:layout_width="152dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="116dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/q3" />
+
+    <ImageView
+        android:id="@+id/q3done"
+        android:visibility="invisible"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="4dp"
+        android:src="@drawable/done"
+        app:layout_constraintStart_toEndOf="@+id/editText1"
+        app:layout_constraintTop_toTopOf="@+id/editText1" />
+
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/q4"
+        android:layout_width="294dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/assis_q4"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/editText1"
+        app:layout_constraintVertical_bias="0.0" />
+
+
+    <EditText
+        android:visibility="invisible"
+        android:id="@+id/editText2"
+        android:layout_width="152dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="116dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/q4" />
+
+    <ImageView
+        android:id="@+id/q4done"
+        android:visibility="invisible"
+        android:layout_width="39dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="4dp"
+        android:src="@drawable/done"
+        app:layout_constraintStart_toEndOf="@+id/editText2"
+        app:layout_constraintTop_toTopOf="@+id/editText2" />
+
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/q5"
+        android:layout_width="294dp"
+        android:layout_height="58dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/assis_q5"
+        app:layout_constraintBottom_toBottomOf="@+id/imageView2"
+        app:layout_constraintStart_toStartOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/editText2"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:visibility="invisible"
+        android:id="@+id/q5Agree"
+        android:layout_width="110dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="8dp"
+        android:text="Yes"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/q5" />
+
+    <Button
+        android:id="@+id/q5ignore"
+        android:layout_width="110dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="8dp"
+        android:text="No"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@+id/q5Agree"
+        app:layout_constraintTop_toTopOf="@+id/q5Agree" />
+
+
+</android.support.constraint.ConstraintLayout>

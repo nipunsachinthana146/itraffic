@@ -1,0 +1,142 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1">
+
+        <EditText
+            android:id="@+id/TF_location"
+            android:layout_width="286dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/B_search"
+            android:layout_weight="1.01"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+
+        <ImageView
+            android:id="@+id/micImageView"
+            android:layout_width="58dp"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/TF_location"
+            android:layout_alignParentEnd="true"
+            android:onClick="getSpeechInput"
+            android:src="@drawable/micicon"/>
+
+
+        <Button
+            android:id="@+id/B_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/TF_location"
+            android:layout_alignParentEnd="true"
+            android:onClick="onClick"
+            android:text="Search" />
+
+
+    </LinearLayout>
+
+
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="622dp"
+        android:layout_below="@+id/B_hospital"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="71dp"
+        tools:context="MapsActivity" />
+
+
+    <fragment
+        android:id="@+id/map2"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="449dp"
+        android:layout_height="67dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-11dp"
+        android:layout_marginBottom="3dp"
+        tools:context="MapsActivity">
+
+        <ImageView
+            android:id="@+id/bottom_fraga"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#123">
+
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/bottom_frag"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#123"
+            android:src="@drawable/adverteasement_1">
+
+        </ImageView>
+
+    </fragment>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="4">
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/B_hospital"
+        android:layout_width="132dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignParentStart="true"
+        android:onClick="onClick"
+        android:text="Hospitals" />
+
+    <Button
+        android:id="@+id/B_restaurant"
+        android:layout_width="141dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_toEndOf="@+id/B_hospital"
+        android:onClick="onClick"
+        android:text="Restaurants" />
+
+    <Button
+        android:id="@+id/B_school"
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/linearLayout"
+        android:layout_toEndOf="@+id/B_restaurant"
+        android:onClick="onClick"
+        android:text="Schools" />
+
+    <Button
+        android:id="@+id/B_to"
+        android:layout_width="13dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/map"
+        android:layout_marginStart="89dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@+id/B_school"
+        android:onClick="onClick"
+        android:text="To" />
+
+</RelativeLayout>
