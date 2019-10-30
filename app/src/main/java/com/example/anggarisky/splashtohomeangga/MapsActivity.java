@@ -1,15 +1,18 @@
 package com.example.anggarisky.splashtohomeangga;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.speech.RecognizerIntent;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -24,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.anggarisky.splashtohomeangga.controller.WebServiceController;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -38,6 +42,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,6 +51,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -56,8 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         GoogleMap.OnMarkerClickListener,
-        GoogleMap.OnMarkerDragListener
-{
+        GoogleMap.OnMarkerDragListener {
 
     private EditText txtView;
     ImageView fragment;
@@ -69,6 +75,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int PROXIMITY_RADIUS = 10000;
     double latitude, longitude;
     double end_latitude, end_longitude;
+    private Handler handler;
+    private LatLng latLng;
+    private ArrayList<Location> locationArrayList;
+    private Polyline polyline;
 
 
     @Override
@@ -81,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         txtView = (EditText) findViewById(R.id.TF_location);
-        fragment=findViewById(R.id.bottom_frag);
+        fragment = findViewById(R.id.bottom_frag);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkLocationPermission();
@@ -91,9 +101,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (!CheckGooglePlayServices()) {
             Log.d("onCreate", "Finishing test case since Google Play Services are not available");
             finish();
-        }
-        else {
-            Log.d("onCreate","Google Play Services available.");
+        } else {
+            Log.d("onCreate", "Google Play Services available.");
         }
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -106,35 +115,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
     public void getSpeechInput(View view) {
 
-        Intent intent=new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
-        if(intent.resolveActivity(getPackageManager())!= null){
+        if (intent.resolveActivity(getPackageManager()) != null) {
 
-            startActivityForResult(intent,10);
-        }
-        else {
-            Toast.makeText(this,"Your device is not support to this feature" , Toast.LENGTH_SHORT).show();
+            startActivityForResult(intent, 10);
+        } else {
+            Toast.makeText(this, "Your device is not support to this feature", Toast.LENGTH_SHORT).show();
         }
 
     }
 
 
-
-
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch(requestCode){
+        switch (requestCode) {
 
             case 10:
 
-                if (resultCode== RESULT_OK && data!= null){
-                    ArrayList<String> result=data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                if (resultCode == RESULT_OK && data != null) {
+                    ArrayList<String> result = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     txtView.setText(result.get(0));
                 }
 
@@ -147,8 +152,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean CheckGooglePlayServices() {
         GoogleApiAvailability googleAPI = GoogleApiAvailability.getInstance();
         int result = googleAPI.isGooglePlayServicesAvailable(this);
-        if(result != ConnectionResult.SUCCESS) {
-            if(googleAPI.isUserResolvableError(result)) {
+        if (result != ConnectionResult.SUCCESS) {
+            if (googleAPI.isUserResolvableError(result)) {
                 googleAPI.getErrorDialog(this, result,
                         0).show();
             }
@@ -190,7 +195,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -200,13 +204,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mGoogleApiClient.connect();
     }
 
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
+        mMap.clear();
         Object dataTransfer[] = new Object[2];
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
 
 
-        switch(v.getId()) {
+        switch (v.getId()) {
             case R.id.B_search: {
                 EditText tf_location = (EditText) findViewById(R.id.TF_location);
                 String location = tf_location.getText().toString();
@@ -226,7 +230,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (addressList != null) {
                         for (int i = 0; i < addressList.size(); i++) {
                             Address myAddress = addressList.get(i);
-                            LatLng latLng = new LatLng(myAddress.getLatitude(), myAddress.getLongitude());
+                            latLng = new LatLng(myAddress.getLatitude(), myAddress.getLongitude());
                             markerOptions.position(latLng);
                             mMap.addMarker(markerOptions);
                             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -248,6 +252,122 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //                    markerOptions.position(latLng3);
 //                    mMap.addMarker(markerOptions);
 //                    mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng3));
+                    handler = new Handler();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                }});
+
+                            try {
+                                HashMap<String, String> params = new HashMap<>();
+                                params.put("overview", "true");
+                                params.put("alternatives", "true");
+                                params.put("steps", "true");
+
+
+                                String url = "http://192.168.8.102:5000/route/v1/driving/" + latLng.longitude + "," + latLng.latitude + ";" + longitude + "," + latitude + "?overview=false&alternatives=true&steps=true";
+
+                                JSONObject jsonObject = WebServiceController.getJsonObject(url, params);
+
+
+                                Log.d("xxxx", jsonObject.toString());
+
+                                JSONArray jsonArrayRoutes = jsonObject.getJSONArray("routes");
+                                locationArrayList = new ArrayList<>();
+
+                                for (int i = 0; i < jsonArrayRoutes.length(); i++) {
+
+                                    JSONObject routeObj = jsonArrayRoutes.getJSONObject(i);
+
+                                    JSONArray legs = routeObj.getJSONArray("legs");
+
+                                    for (int j = 0; j < legs.length(); j++) {
+                                        JSONObject leg = legs.getJSONObject(i);
+
+                                        JSONArray steps = leg.getJSONArray("steps");
+
+                                        for (int k = 0; k < steps.length(); k++) {
+                                            JSONObject step = steps.getJSONObject(k);
+
+                                            JSONArray intersections = step.getJSONArray("intersections");
+
+                                            for (int l = 0; l < intersections.length(); l++) {
+
+                                                JSONObject intersection = intersections.getJSONObject(l);
+                                                String location = intersection.getString("location");
+                                                JSONArray locArr = new JSONArray(location);
+                                                double lat = locArr.getDouble(1);
+                                                double lon = locArr.getDouble(0);
+
+                                                Location x = new Location("gps");
+                                                x.setLatitude(lat);
+                                                x.setLongitude(lon);
+                                                locationArrayList.add(x);
+
+
+                                            }
+
+                                        }
+
+                                    }
+
+
+//                                String location=objectWay.getString("location");
+//
+//                                JSONArray locArr=new JSONArray(location);
+//
+//                                double lat=locArr.getDouble(1);
+//                                double lon=locArr.getDouble(0);
+//
+//                               Location x= new Location("gps");
+//                               x.setLatitude(lat);
+//                               x.setLongitude(lon);
+//                               locationArrayList.add(x);
+//
+//                                Log.i("json",objectWay.toString());
+
+                                }
+
+                            } catch (Exception e) {
+                                Log.e("ERROR", e.toString());
+                            }
+
+
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    PolylineOptions polyl = new PolylineOptions();
+
+                                    if (polyline != null) {
+                                        polyline.remove();
+                                    }
+
+
+
+
+                                    for (Location y : locationArrayList) {
+//                                        myMap.addPolyline(new PolylineOptions()
+//                                                .add(new LatLng(src.latitude, src.longitude),
+//                                                        new LatLng(dest.latitude, dest.longitude))
+//                                                .width(5).color(Color.BLUE).geodesic(true));
+
+                                        polyl.add(new LatLng(y.getLatitude(), y.getLongitude()));
+                                    }
+
+
+                                    polyline = mMap.addPolyline(polyl.width(5).color(Color.BLUE).geodesic(true));
+
+                                }
+                            });
+
+
+                        }
+                    }).start();
 
 
                 }
@@ -316,18 +436,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-    private String getDirectionsUrl()
-    {
+    private String getDirectionsUrl() {
         StringBuilder googleDirectionsUrl = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-        googleDirectionsUrl.append("origin="+latitude+","+longitude);
-        googleDirectionsUrl.append("&destination="+end_latitude+","+end_longitude);
-        googleDirectionsUrl.append("&key="+"AIzaSyCAcfy-02UHSu2F6WeQ1rhQhkCr51eBL9g");
+        googleDirectionsUrl.append("origin=" + latitude + "," + longitude);
+        googleDirectionsUrl.append("&destination=" + end_latitude + "," + end_longitude);
+        googleDirectionsUrl.append("&key=" + "AIzaSyCAcfy-02UHSu2F6WeQ1rhQhkCr51eBL9g");
 
         return googleDirectionsUrl.toString();
     }
 
-    private String getUrl(double latitude, double longitude, String nearbyPlace)
-    {
+    private String getUrl(double latitude, double longitude, String nearbyPlace) {
         StringBuilder googlePlacesUrl = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         googlePlacesUrl.append("location=" + latitude + "," + longitude);
         googlePlacesUrl.append("&radius=" + PROXIMITY_RADIUS);
@@ -339,8 +457,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
 
-
-
+    @SuppressLint("RestrictedApi")
     @Override
     public void onConnected(Bundle bundle) {
         mLocationRequest = new LocationRequest();
@@ -353,7 +470,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
         }
     }
-
 
 
     @Override
@@ -387,8 +503,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
 
 
-        Toast.makeText(MapsActivity.this,"Your Current Location", Toast.LENGTH_LONG).show();
-        Log.e("currentLocation ","latitude - "+latitude+"  lontitude - "+longitude);
+        Toast.makeText(MapsActivity.this, "Your Current Location", Toast.LENGTH_LONG).show();
+        Log.e("currentLocation ", "latitude - " + latitude + "  lontitude - " + longitude);
 
         //stop location updates
         if (mGoogleApiClient != null) {
@@ -404,7 +520,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    public boolean checkLocationPermission(){
+
+    public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -489,13 +606,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMarkerDragEnd(Marker marker) {
         end_latitude = marker.getPosition().latitude;
-        end_longitude =  marker.getPosition().longitude;
+        end_longitude = marker.getPosition().longitude;
 
-        Log.d("end_lat",""+end_latitude);
-        Log.d("end_lng",""+end_longitude);
+        Log.d("end_lat", "" + end_latitude);
+        Log.d("end_lng", "" + end_longitude);
     }
 
-    public void onBackPressed(){
+    public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
